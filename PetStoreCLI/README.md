@@ -19,5 +19,5 @@ Then follow these steps:
 8. You may now run the PetStoreConsoleApp
     - ``dotnet run -p PetStoreConsoleApp``
     
-
+For more detailed review of this project, visit the <a href="https://lazystack.io/tutorial/tutorial_cli_overview.html">LazyStack DotNet CLI Tutorial</a>.
 
