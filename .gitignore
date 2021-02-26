@@ -351,4 +351,6 @@ MigrationBackup/
 
 # LazyStack Specific
 AwsSettings.json
+aws-lambda-tools-defaults.json
+
 
