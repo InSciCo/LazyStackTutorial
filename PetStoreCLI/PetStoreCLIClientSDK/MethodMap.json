@@ -1,0 +1,16 @@
+{"MethodMap": {
+  "AddPetAsync": "HttpApiSecure",
+  "UpdatePetAsync": "HttpApiSecure",
+  "FindPetsByStatusAsync": "HttpApiSecure",
+  "GetPetByIdAsync": "HttpApiSecure",
+  "UpdatePetWithFormAsync": "HttpApiSecure",
+  "DeletePetAsync": "HttpApiSecure",
+  "GetPetCategoriesAsync": "HttpApiSecure",
+  "GetPetTagsAsync": "HttpApiSecure",
+  "GetInventoryAsync": "ApiSecure",
+  "PlaceOrderAsync": "HttpApiSecure",
+  "GetOrderByIdAsync": "HttpApiSecure",
+  "DeleteOrderAsync": "ApiSecure",
+  "FindPetsByTagsAsync": "HttpApiSecure",
+  "SeedPetsAsync": "HttpApiSecure"
+}}

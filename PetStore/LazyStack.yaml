@@ -1,0 +1,42 @@
+# LazyStack Version 1.0.0
+
+Stacks:
+  Dev:
+    ProfileName: default
+    RegionName: us-east-1
+    StackName: PetStoreDev 
+    Stage: Dev
+    UriCodeTarget: Debug/netcoreapp3.1
+
+NugetPackageVersions:
+  System.ComponentModel.Annotations: "5.0.0"
+  JsonSubTypes: "1.8.0"
+  Newtonsoft.Json: "12.0.3"
+  AWSSDK.Extensions.NETCore.Setup: "3.3.101"
+  Amazon.Lambda.AspNetCoreServer: "5.2.0"
+  Swashbuckle.AspNetCore: "5.6.2"    
+  LazyStackAuth: "1.0.0"
+
+ProjectOptions:
+
+  ClientSDKProjects:
+    PackageReferences:
+      LazyStackAuth: ""
+      System.ComponentModel.Annotations: ""
+      JsonSubTypes: ""
+      Newtonsoft.Json: ""
+
+  SchemaProjects:
+    PackageReferences:
+      Newtonsoft.Json: ""
+
+  LambdaProjects:
+    Runtime: "dotnetcore3.1"
+    PackageReferences:
+      AWSSDK.Extensions.NETCore.Setup: ""
+      Amazon.Lambda.AspNetCoreServer: ""
+
+  WebApiProjects:
+    PackageReferences:
+      AWSSDK.Extensions.NETCore.Setup: ""
+      Swashbuckle.AspNetCore: ""

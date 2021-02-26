@@ -1,0 +1,178 @@
+# SAM Template Review - DO NOT ATTEMPT TO PUBLISH THIS SAM TEMPLATE
+# Publish for a specific stack instead (ex: Stacks/Dev/serverless.template).
+# This file is generated for genral review of generated template. Environment specific content targets
+# like __UriCodeTarget__ and __StageName__ are not resolved.
+
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  HttpApiUnsecure:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: __StageName__
+  Pet:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName:
+        Fn::Sub: ${AWS::StackName}-Pet
+      CodeUri: ../../Lambdas/Pet/bin/__UriCodeTarget__
+      Handler: Pet::LambdaFunc.LambdaEntryPoint::FunctionHandlerAsync
+      Description: Pet
+      Runtime: dotnetcore3.1
+      MemorySize: 128
+      Timeout: 30
+      Tracing: Active
+      Policies:
+      - AWSXrayWriteOnlyAccess
+      Events:
+        FindPetsByStatus:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApiUnsecure
+            Path: /pet/findByStatus
+            Method: GET
+        GetPetById:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApiUnsecure
+            Path: /pet/{petId}
+            Method: GET
+        GetPetCategories:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApiUnsecure
+            Path: /pet/categories
+            Method: GET
+        GetPetTags:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApiUnsecure
+            Path: /pet/tags
+            Method: GET
+        FindPetsByTags:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApiUnsecure
+            Path: /pet/findByTags
+            Method: GET
+        SeedPets:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApiUnsecure
+            Path: /pet/seedPets
+            Method: GET
+    MetaData:
+      ApiEventsGeneration: true
+  PetSecure:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName:
+        Fn::Sub: ${AWS::StackName}-PetSecure
+      CodeUri: ../../Lambdas/PetSecure/bin/__UriCodeTarget__
+      Handler: PetSecure::LambdaFunc.LambdaEntryPoint::FunctionHandlerAsync
+      Description: PetSecure
+      Runtime: dotnetcore3.1
+      MemorySize: 128
+      Timeout: 30
+      Tracing: Active
+      Policies:
+      - AWSXrayWriteOnlyAccess
+      Events:
+        AddPet:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApiUnsecure
+            Path: /pet
+            Method: POST
+        UpdatePet:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApiUnsecure
+            Path: /pet
+            Method: PUT
+        UpdatePetWithForm:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApiUnsecure
+            Path: /pet/{petId}
+            Method: POST
+        DeletePet:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApiUnsecure
+            Path: /pet/{petId}
+            Method: DELETE
+    MetaData:
+      ApiEventsGeneration: true
+  Order:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName:
+        Fn::Sub: ${AWS::StackName}-Order
+      CodeUri: ../../Lambdas/Order/bin/__UriCodeTarget__
+      Handler: Order::LambdaFunc.LambdaEntryPoint::FunctionHandlerAsync
+      Description: Order
+      Runtime: dotnetcore3.1
+      MemorySize: 128
+      Timeout: 30
+      Tracing: Active
+      Policies:
+      - AWSXrayWriteOnlyAccess
+      Events:
+        PlaceOrder:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApiUnsecure
+            Path: /order
+            Method: POST
+        GetOrderById:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApiUnsecure
+            Path: /order/{orderId}
+            Method: GET
+    MetaData:
+      ApiEventsGeneration: true
+  OrderSecure:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName:
+        Fn::Sub: ${AWS::StackName}-OrderSecure
+      CodeUri: ../../Lambdas/OrderSecure/bin/__UriCodeTarget__
+      Handler: OrderSecure::LambdaFunc.LambdaEntryPoint::FunctionHandlerAsync
+      Description: OrderSecure
+      Runtime: dotnetcore3.1
+      MemorySize: 128
+      Timeout: 30
+      Tracing: Active
+      Policies:
+      - AWSXrayWriteOnlyAccess
+      Events:
+        GetInventory:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApiUnsecure
+            Path: /order/inventory
+            Method: GET
+        DeleteOrder:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApiUnsecure
+            Path: /order/{orderId}
+            Method: DELETE
+    MetaData:
+      ApiEventsGeneration: true

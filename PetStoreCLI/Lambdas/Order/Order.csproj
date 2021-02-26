@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+    <AWSProjectType>Lambda</AWSProjectType>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="3.3.101" />
+    <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="5.2.0" />
+    <ProjectReference Include="..\..\PetStoreRepo\PetStoreRepo.csproj" />
+    <ProjectReference Include="..\..\Controllers\OrderController\OrderController.csproj" />
+  </ItemGroup>
+</Project>
