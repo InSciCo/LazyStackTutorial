@@ -108,10 +108,7 @@ Resources:
             Action:
             - 'execute-api:Invoke'
             Resource:
-            - Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiSecure}/AddPet
-            - Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiSecure}/UpdatePet
-            - Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiSecure}/UpdatePetWithForm
-            - Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiSecure}/DeletePet
+            - Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiSecure}/*
 
   LZDDB01:
     Type: AWS::DynamoDB::Table
