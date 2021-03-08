@@ -108,7 +108,7 @@ Resources:
             Action:
             - 'execute-api:Invoke'
             Resource:
-            - Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiSecure}/*
+              Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiSecure}/*
 
   LZDDB01:
     Type: AWS::DynamoDB::Table
