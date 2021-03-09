@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    x:Class="PetStoreMobileApp.Views.MainPage"
+    xmlns:vm="clr-namespace:PetStoreMobileApp.ViewModels"
+    Title="LazyStack Pet Adoption Demo"
+    >
+
+    <ContentPage.BindingContext>
+        <vm:MainPageViewModel />
+    </ContentPage.BindingContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <!-- Hero Image -->
+        <StackLayout 
+            IsVisible="{Binding AuthProcess.NoActiveAuthProcess}"
+            Grid.Row="0" 
+            BackgroundColor="#96d1ff" 
+            VerticalOptions="FillAndExpand" 
+            HorizontalOptions="Fill">
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
+                <ContentView Padding="0,10,0,5" VerticalOptions="FillAndExpand">
+                    <Image Source="LazyLogo800x800.png" VerticalOptions="Center" HeightRequest="120" />
+                </ContentView>
+            </StackLayout>
+        </StackLayout>
+
+        <!-- Authentication -->
+        <ScrollView Grid.Row="1">
+
+            <StackLayout Orientation="Vertical" Padding="50,10,30,24" Spacing="10">
+
+                <!-- Current Process -->
+                <Label 
+                    IsVisible="{Binding AuthProcess.HasActiveAuthProcess}"
+                    Text="{Binding AuthProcess.AuthProcessMessage}"/>
+
+                <ActivityIndicator
+                    IsVisible="{Binding AuthProcess.IsLongBusy}"
+                    IsRunning="true"/>
+
+                <!-- AuthProcessForm  **See code behind for animation and entry focus on state changes-->
+                <StackLayout 
+                    x:Name="AuthProcessForm"
+                    IsVisible="true">
+
+                    <!-- Auth Challenge Message -->
+                    <Label Text="{Binding AuthProcess.AuthChallengeMessage}"/>
+
+                    <!-- Login -->
+                    <StackLayout 
+                        Orientation="Horizontal" 
+                        IsVisible="{Binding AuthProcess.CurrentChallengeIsLogin}">
+                        <Entry 
+                            x:Name="LoginEntry"
+                            WidthRequest="250"
+                            Placeholder="login" 
+                            IsTabStop="True"
+                            Text="{Binding AuthProcess.Login, Mode=TwoWay}" 
+                            ClearButtonVisibility="WhileEditing"
+                            Keyboard="Text"
+                            ReturnType="Next"
+                            IsSpellCheckEnabled="False"
+                            IsTextPredictionEnabled="False"
+                            ReturnCommand="{Binding VerifyLoginCommand}"/>
+                        <CheckBox
+                            IsChecked="{Binding AuthProcess.IsLoginFormatOk}"
+                            IsEnabled="false"/>
+                    </StackLayout>
+
+                    <!-- NewLogin -->
+                    <StackLayout 
+                        Orientation="Horizontal" 
+                        IsVisible="{Binding AuthProcess.CurrentChallengeIsNewLogin}">
+                        <Entry 
+                            x:Name="NewLoginEntry"
+                            WidthRequest="250"
+                            Placeholder="login" 
+                            IsTabStop="True"
+                            Text="{Binding AuthProcess.NewLogin, Mode=TwoWay}" 
+                            ClearButtonVisibility="WhileEditing"
+                            Keyboard="Text"
+                            ReturnType="Next"
+                            IsSpellCheckEnabled="False"
+                            IsTextPredictionEnabled="False"
+                            ReturnCommand="{Binding VerifyNewLoginCommand}"/>
+                        <CheckBox
+                            IsChecked="{Binding AuthProcess.IsNewLoginFormatOk}"
+                            IsEnabled="false"/>
+                    </StackLayout>
+
+                    <!-- Password -->
+                    <StackLayout 
+                            IsVisible="{Binding AuthProcess.CurrentChallengeIsPassword}"
+                            Orientation="Horizontal">
+                        <Entry 
+                            x:Name="PasswordEntry"
+                            WidthRequest="250"
+                            IsPassword="true" 
+                            Placeholder="password" 
+                            IsTabStop="True"
+                            Text="{Binding AuthProcess.Password, Mode=TwoWay}"
+                            ClearButtonVisibility="WhileEditing"
+                            ReturnType="Next"
+                            IsSpellCheckEnabled="False"
+                            IsTextPredictionEnabled="False"
+                            ReturnCommand="{Binding VerifyPasswordCommand}"/>
+                        <CheckBox
+                            IsChecked="{Binding AuthProcess.IsPasswordFormatOk}"
+                            IsEnabled="false"/>
+                    </StackLayout>
+
+                    <!-- NewPassword -->
+                    <StackLayout 
+                        IsVisible="{Binding AuthProcess.CurrentChallengeIsNewPassword}"
+                        Orientation="Horizontal" >
+                        <Entry 
+                            x:Name="NewPasswordEntry"
+                            WidthRequest="250"
+                            IsPassword="true" 
+                            Placeholder="new password" 
+                            IsTabStop="True"
+                            Text="{Binding AuthProcess.NewPassword, Mode=TwoWay}"
+                            ClearButtonVisibility="WhileEditing"
+                            ReturnType="Next"
+                            IsSpellCheckEnabled="False"
+                            IsTextPredictionEnabled="False"
+                            ReturnCommand="{Binding VerifyNewPasswordCommand}"/>
+                        <CheckBox
+                            IsChecked="{Binding AuthProcess.IsNewPasswordFormatOk}"
+                            IsEnabled="false"/>
+                    </StackLayout>
+
+                    <!-- Email -->
+                    <StackLayout 
+                        IsVisible="{Binding AuthProcess.CurrentChallengeIsEmail}" 
+                        Orientation="Horizontal" >
+                        <Entry 
+                            x:Name="EmailEntry"
+                            WidthRequest="250"
+                            Placeholder="email" 
+                            IsTabStop="True"
+                            Text="{Binding AuthProcess.Email, Mode=TwoWay}"
+                            ClearButtonVisibility="WhileEditing"
+                            Keyboard="Email"
+                            ReturnType="Next"
+                            IsSpellCheckEnabled="False"
+                            IsTextPredictionEnabled="False"
+                            ReturnCommand="{Binding VerifyEmailCommand}"/>
+                        <CheckBox
+                            IsChecked="{Binding AuthProcess.IsEmailFormatOk}"
+                            IsEnabled="false"/>
+                    </StackLayout>
+
+                    <!-- NewEmail -->
+                    <StackLayout 
+                        IsVisible="{Binding AuthProcess.CurrentChallengeIsNewEmail}" 
+                        Orientation="Horizontal" >
+                        <Entry 
+                            x:Name="NewEmailEntry"
+                            WidthRequest="250"
+                            Placeholder="email" 
+                            IsTabStop="True"
+                            Text="{Binding AuthProcess.NewEmail, Mode=TwoWay}"
+                            ClearButtonVisibility="WhileEditing"
+                            Keyboard="Email"
+                            ReturnType="Next"
+                            IsSpellCheckEnabled="False"
+                            IsTextPredictionEnabled="False"
+                            ReturnCommand="{Binding VerifyNewEmailCommand}"/>
+                        <CheckBox
+                            IsChecked="{Binding AuthProcess.IsNewEmailFormatOk}"
+                            IsEnabled="false"/>
+                    </StackLayout>
+
+                    <!-- Phone -->
+                    <StackLayout 
+                        IsVisible="{Binding AuthProcess.CurrentChallengeIsPhone}" 
+                        Orientation="Horizontal" >
+                        <Entry 
+                            x:Name="PhoneEntry"
+                            WidthRequest="250"
+                            Placeholder="mobile phone number" 
+                            IsTabStop="True"
+                            Text="{Binding AuthProcess.PHone, Mode=TwoWay}"
+                            ClearButtonVisibility="WhileEditing"
+                            Keyboard="Telephone"
+                            ReturnType="Next"
+                            IsSpellCheckEnabled="False"
+                            IsTextPredictionEnabled="False"
+                            ReturnCommand="{Binding VerifyPhoneCommand}"/>
+                        <CheckBox
+                            IsChecked="{Binding AuthProcess.IsEmailFormatOk}"
+                            IsEnabled="false"/>
+                    </StackLayout>
+
+                    <!-- NewPhone -->
+                    <StackLayout 
+                        IsVisible="{Binding AuthProcess.CurrentChallengeIsNewPhone}" 
+                        Orientation="Horizontal" >
+                        <Entry 
+                            x:Name="NewPhoneEntry"
+                            WidthRequest="250"
+                            Placeholder="new mobile phone number" 
+                            IsTabStop="True"
+                            Text="{Binding AuthProcess.NewPhone, Mode=TwoWay}"
+                            ClearButtonVisibility="WhileEditing"
+                            Keyboard="Telephone"
+                            ReturnType="Next"
+                            IsSpellCheckEnabled="False"
+                            IsTextPredictionEnabled="False"
+                            ReturnCommand="{Binding VerifyNewPhoneCommand}"/>
+                        <CheckBox
+                            IsChecked="{Binding AuthProcess.IsNewPhoneFormatOk}"
+                            IsEnabled="false"/>
+                    </StackLayout>
+
+                    <!-- Auth Code-->
+                    <StackLayout 
+                        IsVisible="{Binding AuthProcess.CurrentChallengeIsCode}"
+                        Orientation="Horizontal" >
+                        <Entry 
+                            x:Name="CodeEntry"
+                            WidthRequest="250"
+                            Placeholder="code" 
+                            IsTabStop="True"
+                            Text="{Binding AuthProcess.Code, Mode=TwoWay}"
+                            ClearButtonVisibility="WhileEditing"
+                            Keyboard="Numeric"
+                            IsSpellCheckEnabled="False"
+                            IsTextPredictionEnabled="False"
+                            ReturnCommand="{Binding VerifyCodeCommand}"/>
+                        <CheckBox
+                            IsChecked="{Binding AuthProcess.IsCodeFormatOk}"
+                            IsEnabled="false"/>
+                    </StackLayout>
+
+                    <!-- Alert Message -->
+                    <Label 
+                        Text="{Binding AuthProcess.AlertMessage}"
+                        IsVisible="{Binding AuthProcess.HasAlert}"/>
+
+                    <!-- Buttons -->
+                    <Button 
+                        IsVisible="{Binding AuthProcess.CanSignIn}"
+                        Text="Sign In" 
+                        Command="{Binding StartSignInCommand}"/>
+
+                    <Button 
+                        IsVisible ="{Binding AuthProcess.CanSignUp}" 
+                        Text="Sign Up" 
+                        Command="{Binding StartSignUpCommand}"/>
+
+                    <Button 
+                        IsVisible="{Binding AuthProcess.CanResetPassword}"
+                        Text="Forgot Password" 
+                        Command="{Binding StartResetPasswordCommand}"/>
+
+                    <Button
+                        IsVisible="{Binding AuthProcess.CanUpdateEmail}"
+                        Text="Update Email"
+                        Command="{Binding StartUpdateEmailCommand}"/>
+
+                    <Button
+                        IsVisible="{Binding AuthProcess.CanUpdatePassword}"
+                        Text="Update Password"
+                        Command="{Binding StartUpdatePasswordCommand}"/>
+
+                    <Button 
+                        IsVisible="{Binding AuthProcess.CanUpdatePhone}"
+                        Text="Update Phone"
+                        Command="{Binding StartUpdatePhoneCommand}"/>
+
+                    <Button 
+                        IsVisible="{Binding AuthProcess.CanSignOut}"
+                        Text="Sign Out"
+                        Command="{Binding SignOutCommand}"/>
+
+                    <Button 
+                        IsVisible="{Binding AuthProcess.CanResendCode}"
+                        Text="ResendCode"
+                        Command="{Binding ResendCodeCommand}"/>
+
+                    <Button 
+                        IsVisible="{Binding AuthProcess.CanCancel}"
+                        Text="Cancel"
+                        Command="{Binding CancelCommand}"/>
+                    
+                    <Button
+                        IsVisible="{Binding AuthProcess.IsSignedIn}"
+                        Text="See Pets"
+                        Clicked="SeePets_Button_Clicked"/>
+
+                </StackLayout>
+
+            </StackLayout>
+        </ScrollView>
+    </Grid>
+
+</ContentPage>

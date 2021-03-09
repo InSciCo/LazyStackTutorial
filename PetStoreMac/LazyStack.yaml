@@ -1,0 +1,220 @@
+# LazyStack Version 1.0.0
+Stacks:
+  Dev:
+    ProfileName: default
+    RegionName: us-east-1
+    StackName: PetStoreMacDev
+    Stage: Dev 
+    UriCodeTarget: Debug/netcoreapp3.1
+
+ApiTagMap:
+  HttpApiSecure:
+  - petSecure 
+  - order
+  - pet 
+  ApiSecure: 
+  - orderSecure
+
+NugetPackageVersions:
+  Amazon.Lambda.AspNetCoreServer: "5.2.0"
+  AWSSDK.Extensions.NETCore.Setup: "3.3.101"
+  JsonSubTypes: "1.8.0"
+  LazyStackAuth: "1.0.0"
+  Newtonsoft.Json: "12.0.3"
+  Swashbuckle.AspNetCore: "5.6.2"    
+  System.ComponentModel.Annotations: "5.0.0"
+
+ProjectOptions:
+  PetStoreClientSDK:
+    Properties:
+      DocumentationFile: bin\$(Configuration)\$(TargetFramework)\PetStoreClientSDK.xml
+      RepositoryUrl: https://github.com/USER_ID/REPO_ID.git
+      PackageReleaseNotes: 'Minor update'
+
+  ClientSDKProjects:
+    PackageReferences:
+      LazyStackAuth:
+      System.ComponentModel.Annotations: 
+      JsonSubTypes: 
+      Newtonsoft.Json: 
+
+  SchemaProjects:
+    PackageReferences:
+      Newtonsoft.Json: 
+
+  LambdaProjects:
+    Runtime: "dotnetcore3.1"
+    PackageReferences:
+      AWSSDK.Extensions.NETCore.Setup: 
+      Amazon.Lambda.AspNetCoreServer: 
+
+    ProjectReferences:
+    - ..\..\PetStoreRepo\PetStoreRepo.csproj
+            
+    ServiceRegistrations:
+    - services.AddSingleton<PetStoreRepo.Models.PetRepo>(); 
+    - services.AddSingleton<PetStoreRepo.Models.IPetRepo>(x => x.GetRequiredService<PetStoreRepo.Models.PetRepo>()); 
+    - services.AddSingleton<PetController.IPetController>(x => x.GetRequiredService<PetStoreRepo.Models.PetRepo>()); 
+    - services.AddSingleton<PetSecureController.IPetSecureController>(x => x.GetRequiredService<PetStoreRepo.Models.PetRepo>());
+    - services.AddSingleton<PetStoreRepo.Models.OrderRepo>();
+    - services.AddSingleton<OrderController.IOrderController>(x => x.GetRequiredService<PetStoreRepo.Models.OrderRepo>());
+    - services.AddSingleton<OrderSecureController.IOrderSecureController>(x=> x.GetRequiredService<PetStoreRepo.Models.OrderRepo>());
+    - services.AddSingleton<PetStoreRepo.Models.ITagRepo,PetStoreRepo.Models.TagRepo>();
+    - services.AddSingleton<PetStoreRepo.Models.ICategoryRepo,PetStoreRepo.Models.CategoryRepo>(); 
+    - services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
+    - services.AddAWSService<Amazon.DynamoDBv2.IAmazonDynamoDB>();
+
+    Properties:
+      MemorySize: 256
+      Timeout: 30
+      Tracing: Active
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: 
+              Ref: LZDDB01  
+      Environment:
+        Variables:
+          TABLE_NAME:
+            Ref: LZDDB01
+          TABLE_ARN: 
+            Fn::GetAtt: LZDDB01.Arn              
+
+  WebApiProjects:
+    PackageReferences:
+      AWSSDK.Extensions.NETCore.Setup: 
+      Swashbuckle.AspNetCore:   
+
+    ServiceRegistrations:
+    - services.AddSingleton<PetStoreRepo.Models.PetRepo>(); 
+    - services.AddSingleton<PetStoreRepo.Models.IPetRepo>(x => x.GetRequiredService<PetStoreRepo.Models.PetRepo>()); 
+    - services.AddSingleton<PetController.IPetController>(x => x.GetRequiredService<PetStoreRepo.Models.PetRepo>()); 
+    - services.AddSingleton<PetSecureController.IPetSecureController>(x => x.GetRequiredService<PetStoreRepo.Models.PetRepo>());
+    - services.AddSingleton<PetStoreRepo.Models.OrderRepo>();
+    - services.AddSingleton<OrderController.IOrderController>(x => x.GetRequiredService<PetStoreRepo.Models.OrderRepo>());
+    - services.AddSingleton<OrderSecureController.IOrderSecureController>(x=> x.GetRequiredService<PetStoreRepo.Models.OrderRepo>());
+    - services.AddSingleton<PetStoreRepo.Models.ITagRepo,PetStoreRepo.Models.TagRepo>();
+    - services.AddSingleton<PetStoreRepo.Models.ICategoryRepo,PetStoreRepo.Models.CategoryRepo>(); 
+    - services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
+    - services.AddAWSService<Amazon.DynamoDBv2.IAmazonDynamoDB>();
+
+    ProjectReferences:
+    - ..\PetStoreRepo\PetStoreRepo.csproj
+
+AwsResources:
+  Pet:
+    Type: AWS::Serverless::Function
+    Properties:
+      MemorySize: 512
+
+  LZDDB01:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: PK
+          AttributeType: S
+        - AttributeName: SK
+          AttributeType: S
+        - AttributeName: SK1
+          AttributeType: S
+        - AttributeName: SK2
+          AttributeType: S
+        - AttributeName: SK3
+          AttributeType: S
+        - AttributeName: SK4
+          AttributeType: S
+        - AttributeName: SK5
+          AttributeType: S
+        - AttributeName: GSI1PK
+          AttributeType: S
+        - AttributeName: GSI1SK
+          AttributeType: S
+      BillingMode: PAY_PER_REQUEST
+      KeySchema:
+        - AttributeName: PK
+          KeyType: HASH
+        - AttributeName: SK
+          KeyType: RANGE
+      LocalSecondaryIndexes:
+        - IndexName: PK-SK1-Index
+          KeySchema:
+            - AttributeName: PK
+              KeyType: HASH
+            - AttributeName: SK1
+              KeyType: RANGE
+          Projection:
+            NonKeyAttributes:
+              - Status
+              - UpdateUtcTick
+              - CreateUtcTick
+              - General
+            ProjectionType: INCLUDE
+        - IndexName: PK-SK2-Index
+          KeySchema:
+            - AttributeName: PK
+              KeyType: HASH
+            - AttributeName: SK2
+              KeyType: RANGE
+          Projection:
+            NonKeyAttributes:
+              - Status
+              - UpdateUtcTick
+              - CreateUtcTick
+              - General
+            ProjectionType: INCLUDE
+        - IndexName: PK-SK3-Index
+          KeySchema:
+            - AttributeName: PK
+              KeyType: HASH
+            - AttributeName: SK3
+              KeyType: RANGE
+          Projection:
+            NonKeyAttributes:
+              - Status
+              - UpdateUtcTick
+              - CreateUtcTick
+              - General
+            ProjectionType: INCLUDE
+        - IndexName: PK-SK4-Index
+          KeySchema:
+            - AttributeName: PK
+              KeyType: HASH
+            - AttributeName: SK4
+              KeyType: RANGE
+          Projection:
+            NonKeyAttributes:
+              - Status
+              - UpdateUtcTick
+              - CreateUtcTick
+              - General
+            ProjectionType: INCLUDE
+        - IndexName: PK-SK5-Index
+          KeySchema:
+            - AttributeName: PK
+              KeyType: HASH
+            - AttributeName: SK5
+              KeyType: RANGE
+          Projection:
+            NonKeyAttributes:
+              - Status
+              - UpdateUtcTick
+              - CreateUtcTick
+              - General
+            ProjectionType: INCLUDE
+      GlobalSecondaryIndexes:
+        - IndexName: GSI1
+          KeySchema:
+            - AttributeName: GSI1PK
+              KeyType: HASH
+            - AttributeName: GSI1SK
+              KeyType: RANGE
+          Projection:
+            NonKeyAttributes:
+              - Status
+              - UpdateUtcTick
+              - CreateUtcTick
+              - General
+            ProjectionType: INCLUDE
+      StreamSpecification:
+        StreamViewType: NEW_AND_OLD_IMAGES
+      TableName: 
+        Fn::Sub: ${AWS::StackName}-DB  
