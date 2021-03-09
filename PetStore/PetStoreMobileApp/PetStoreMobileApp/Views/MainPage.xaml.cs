@@ -1,31 +1,29 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using LazyStackAuth;
+
 using PetStoreMobileApp.ViewModels;
-using PetStoreClientSDK;
-using System.Runtime.CompilerServices;
+using LazyStackAuth;
 
 namespace PetStoreMobileApp.Views
 {
-    public partial class AboutPage : ContentPage
+    public partial class MainPage : ContentPage
     {
-        public AboutPage()
+        public MainPage()
         {
             InitializeComponent();
-            aboutViewModel = (BindingContext as AboutViewModel);
-            authProcess = aboutViewModel.AuthProcess;
+            mainPageViewModel = (BindingContext as MainPageViewModel);
+            authProcess = mainPageViewModel.AuthProcess;
 
-            aboutViewModel.PropertyChanged += AuthProcessForm_PropertyChanged;
+            mainPageViewModel.PropertyChanged += AuthProcessForm_PropertyChanged;
             authProcess.PropertyChanged += AuthProcess_PropertyChanged;
         }
-
         IAuthProcess authProcess;
-        AboutViewModel aboutViewModel;
+        MainPageViewModel mainPageViewModel;
 
         protected override void OnAppearing()
         {
@@ -34,7 +32,7 @@ namespace PetStoreMobileApp.Views
 
         protected override void OnDisappearing()
         {
-            aboutViewModel.PropertyChanged -= AuthProcessForm_PropertyChanged;
+            mainPageViewModel.PropertyChanged -= AuthProcessForm_PropertyChanged;
             authProcess.PropertyChanged -= AuthProcess_PropertyChanged;
             base.OnDisappearing();
         }
@@ -50,18 +48,18 @@ namespace PetStoreMobileApp.Views
         {
             switch (e.PropertyName)
             {
-                case nameof(aboutViewModel.IsCallingAuthProcess):
+                case nameof(mainPageViewModel.IsCallingAuthProcess):
 
-                    if (aboutViewModel.IsCallingAuthProcess)
+                    if (mainPageViewModel.IsCallingAuthProcess)
                     {
-                        AuthProcessForm.FadeTo(0, aboutViewModel.FadeTime);
+                        AuthProcessForm.FadeTo(0, mainPageViewModel.FadeTime);
                         AuthProcessForm.IsVisible = false;
                     }
                     else
                     {
                         AuthProcessForm.Opacity = 0;
                         AuthProcessForm.IsVisible = true;
-                        AuthProcessForm.FadeTo(1, aboutViewModel.FadeTime);
+                        AuthProcessForm.FadeTo(1, mainPageViewModel.FadeTime);
                     }
                     break;
             }
@@ -109,6 +107,12 @@ namespace PetStoreMobileApp.Views
                     }
                     break;
             }
+        }
+
+        private void SeePets_Button_Clicked(object sender, EventArgs e)
+        {
+            Navigation.PushAsync(new ItemsPage());
+
         }
     }
 }

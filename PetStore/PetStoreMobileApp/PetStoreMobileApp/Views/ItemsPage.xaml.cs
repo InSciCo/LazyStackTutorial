@@ -1,4 +1,3 @@
-using PetStoreMobileApp.Models;
 using PetStoreMobileApp.ViewModels;
 using PetStoreMobileApp.Views;
 using System;
@@ -23,10 +22,9 @@ namespace PetStoreMobileApp.Views
             BindingContext = _viewModel = new ItemsViewModel();
         }
 
-        protected override void OnAppearing()
+        protected override async void OnAppearing()
         {
-            base.OnAppearing();
-            _viewModel.OnAppearing();
+            await _viewModel.LoadItemsAsync();
         }
     }
 }

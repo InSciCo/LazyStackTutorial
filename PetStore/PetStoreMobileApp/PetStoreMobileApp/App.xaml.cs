@@ -1,16 +1,12 @@
-using System;
-using System.IO;
-using System.Reflection;
+﻿using System;
 using Microsoft.Extensions.Configuration;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
-using PetStoreMobileApp.Services;
-using PetStoreMobileApp.Views;
 using PetStoreClientSDK;
 using LazyStackAuth;
-
+using PetStoreMobileApp.Views;
 
 namespace PetStoreMobileApp
 {
@@ -20,7 +16,6 @@ namespace PetStoreMobileApp
         {
             InitializeComponent();
 
-            DependencyService.Register<MockDataStore>();
             using var authMessagesStream = typeof(IAuthProcess).Assembly.GetManifestResourceStream("LazyStackAuth.AuthMessages.json");
             using var awsSettingsStream = typeof(App).Assembly.GetManifestResourceStream("PetStoreMobileApp.AwsSettings.json");
             using var methodMapStream = typeof(PetStore).Assembly.GetManifestResourceStream("PetStoreClientSDK.MethodMap.json");
@@ -43,7 +38,7 @@ namespace PetStoreMobileApp
             ILzHttpClient lzHttpClient = new LzHttpClient(appConfig, authProvider, localApiName);
             PetStore = new PetStore(lzHttpClient); // replace with registration when NSwag provides an interface
 
-            MainPage = new AppShell();
+            MainPage = new NavigationPage (new MainPage());        
         }
 
         public static PetStore PetStore; // Not using DI because there is no IPetStore (LazyStack uses NSwag client generator. NSwag is working on interface generation)

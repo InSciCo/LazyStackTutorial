@@ -84,9 +84,6 @@
     <AndroidResource Include="Resources\mipmap-xxhdpi\launcher_foreground.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\icon.png" />
     <AndroidResource Include="Resources\mipmap-xxxhdpi\launcher_foreground.png" />
-    <AndroidResource Include="Resources\drawable\xamarin_logo.png" />
-    <AndroidResource Include="Resources\drawable\icon_about.png" />
-    <AndroidResource Include="Resources\drawable\icon_feed.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\PetStoreMobileApp\PetStoreMobileApp.csproj">
@@ -94,5 +91,13 @@
       <Name>PetStoreMobileApp</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\LazyLogo800x800.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties TriggeredFromHotReload="False" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>

@@ -1,20 +1,15 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage 
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    x:Class="PetStoreMobileApp.Views.AboutPage"
+    x:Class="PetStoreMobileApp.Views.MainPage"
     xmlns:vm="clr-namespace:PetStoreMobileApp.ViewModels"
-    Title="{Binding Title}">
+    Title="LazyStack Pet Adoption Demo"
+    >
 
     <ContentPage.BindingContext>
-        <vm:AboutViewModel />
+        <vm:MainPageViewModel />
     </ContentPage.BindingContext>
-
-    <ContentPage.Resources>
-        <ResourceDictionary>
-            <Color x:Key="Accent">#96d1ff</Color>
-        </ResourceDictionary>
-    </ContentPage.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -26,12 +21,12 @@
         <StackLayout 
             IsVisible="{Binding AuthProcess.NoActiveAuthProcess}"
             Grid.Row="0" 
-            BackgroundColor="{StaticResource Accent}" 
+            BackgroundColor="#96d1ff" 
             VerticalOptions="FillAndExpand" 
             HorizontalOptions="Fill">
             <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="Center">
-                <ContentView Padding="0,40,0,40" VerticalOptions="FillAndExpand">
-                    <Image Source="xamarin_logo.png" VerticalOptions="Center" HeightRequest="64" />
+                <ContentView Padding="0,10,0,5" VerticalOptions="FillAndExpand">
+                    <Image Source="LazyLogo800x800.png" VerticalOptions="Center" HeightRequest="120" />
                 </ContentView>
             </StackLayout>
         </StackLayout>
@@ -39,7 +34,7 @@
         <!-- Authentication -->
         <ScrollView Grid.Row="1">
 
-            <StackLayout Orientation="Vertical" Padding="50,24,30,24" Spacing="10">
+            <StackLayout Orientation="Vertical" Padding="50,10,30,24" Spacing="10">
 
                 <!-- Current Process -->
                 <Label 
@@ -296,6 +291,12 @@
                         IsVisible="{Binding AuthProcess.CanCancel}"
                         Text="Cancel"
                         Command="{Binding CancelCommand}"/>
+                    
+                    <Button
+                        IsVisible="{Binding AuthProcess.IsSignedIn}"
+                        Text="See Pets"
+                        Clicked="SeePets_Button_Clicked"/>
+
                 </StackLayout>
 
             </StackLayout>

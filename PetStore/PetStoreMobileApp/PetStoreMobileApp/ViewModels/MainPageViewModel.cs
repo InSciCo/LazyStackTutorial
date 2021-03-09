@@ -1,32 +1,19 @@
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using PetStoreClientSDK;
 using LazyStackAuth;
+using PetStoreMobileApp;
 
 namespace PetStoreMobileApp.ViewModels
 {
-    /// <summary>
-    /// AboutViewModel contains any process logic that requires Xamarin related 
-    /// libraries. Note that most of the actual process logic for Auth is 
-    /// in the AuthProcess singleton referenced through the AboutViewModel.AuthProcess
-    /// property. The AuthProcess class has no Xamarin dependencies. The AuthProcess
-    /// implements INotifyPropertyChanged so it's properties can be bound.
-    /// 
-    /// Note: When the AboutPage is navigated to the AboutPage.OnAppearing method is 
-    /// used to automatically start a SignIn process if the user is not signed in and 
-    /// no other auth process is active. 
-    /// </summary>
-    public class AboutViewModel : BaseViewModel
+    class MainPageViewModel : BaseViewModel
     {
-        public AboutViewModel()
+        public MainPageViewModel()
         {
-            Title = "About";
-            OpenWebCommand = new Command(async () => await Browser.OpenAsync("https://aka.ms/xamarin-quickstart"));
             ClearCommand = new Command(async () => await MakeAuthProcessCallAsync(_authProcess.ClearAsync));
             CancelCommand = new Command(async () => await MakeAuthProcessCallAsync(_authProcess.CancelAsync));
             SignOutCommand = new Command(async () => await MakeAuthProcessCallAsync(_authProcess.SignOutAsync));
@@ -84,6 +71,8 @@ namespace PetStoreMobileApp.ViewModels
         public ICommand VerifyCodeCommand { get; }
 
         public ICommand ResendCodeCommand { get; }
+
+        public ICommand ViewPetsCommand { get; }
 
         #endregion
 
