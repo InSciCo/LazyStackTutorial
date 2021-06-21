@@ -30,11 +30,12 @@ namespace OrderControllerImpl
 
         public async Task<ActionResult<IDictionary<string, int>>> GetInventoryAsync()
         {
-            var allPetsResult = await petRepo.GetInventoryAsync();
-            if (allPetsResult.Value != null)
+            var result = await petRepo.GetInventoryAsync();
+            var pets = (result.Result as OkObjectResult)?.Value as ICollection<Pet>;
+            if (pets != null)
             {
                 var inventory = new Dictionary<string, int>();
-                foreach (var pet in allPetsResult.Value)
+                foreach (var pet in pets)
                 {
                     var status = pet.PetStatus.ToString();
                     if (!inventory.ContainsKey(status))
@@ -47,7 +48,7 @@ namespace OrderControllerImpl
                     return new NoContentResult();
             }
             else
-                return new NoContentResult();
+                return result.Result;
         }
 
         public async Task<ActionResult<Order>> GetOrderByIdAsync(long orderId)

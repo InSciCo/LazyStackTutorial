@@ -126,7 +126,7 @@ namespace PetStoreRepo.Models
                     return new NoContentResult();
             }
             else
-                return queryResult;
+                return queryResult.Result;
         }
 
         public async Task<ActionResult<ICollection<Pet>>> FindPetsByTagsAsync(IEnumerable<string> tags)
@@ -160,7 +160,7 @@ namespace PetStoreRepo.Models
                     return new NoContentResult();
             }
             else
-                return queryResult;
+                return queryResult.Result;
         }
 
         public async Task<ActionResult<Pet>> GetPetByIdAsync(long petId)
