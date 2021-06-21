@@ -5,14 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="LazyStackDynamoDBRepo" Version="1.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Controllers\OrderController\OrderController.csproj" />
-    <ProjectReference Include="..\Controllers\OrderSecureController\OrderSecureController.csproj" />
-    <ProjectReference Include="..\Controllers\PetController\PetController.csproj" />
-    <ProjectReference Include="..\Controllers\PetSecureController\PetSecureController.csproj" />
+    <ProjectReference Include="..\..\..\LazyStack\LazyStackDynamoDBRepo\LazyStackDynamoDBRepo.csproj" />
+    <ProjectReference Include="..\PetStoreSchema\PetStoreSchema.csproj" />
   </ItemGroup>
 
 </Project>

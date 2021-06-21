@@ -8,44 +8,44 @@ using Amazon.DynamoDBv2.Model;
 using PetStoreSchema.Models;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using OrderController;
-using OrderSecureController;
+
 
 namespace PetStoreRepo.Models
 {
-    public class OrderHelper : IEntityHelper<Order, DefaultEnvelope>
+    public class OrderEnvelope : DataEnvelope<Order>
     {
-        public Order Instance { get; set; }
 
-        public void SetCreateUtcTick(long t) { Instance.CreateUtcTick = t; }
-        public void SetUpdateUtcTick(long t) { Instance.UpdateUtcTick = t; }
-        public long GetUpdateUtcTick() { return Instance.UpdateUtcTick; }
-
-        // Update the keys and data in the envelope from the current Instance
-        public void UpdateEnvelope(DefaultEnvelope env, DefaultEnvelope dbEnvelope = null, bool serialize = false)
+        protected override void SetDbRecordFromEntityInstance()
         {
-            env.TypeName = nameof(Order);
-            env.CreateUtcTick = Instance.CreateUtcTick;
-            env.UpdateUtcTick = Instance.UpdateUtcTick;
+            // Set the Envelope Key fields from the EntityInstance data
+            TypeName = "Order.v1.0.0";
+            CreateUtcTick = EntityInstance.CreateUtcTick;
+            UpdateUtcTick = EntityInstance.UpdateUtcTick;
+            // Primary Key is PartitionKey + SortKey 
+            PK = "Orders:"; // Partition key
+            SK = $"Order:{EntityInstance.Id}"; // sort/range key
 
-            // Primary Key is PartionKey + SortKey
-            env.PK = "Orders:"; // partition key
-            env.SK = $"Order:{Instance.Id}"; // sort/range key
-
-            if (serialize)
-                env.Data = JsonConvert.SerializeObject(Instance);
+            // The base method copies information from the envelope keys into the dbRecord
+            base.SetDbRecordFromEntityInstance();
         }
 
-        // Return an object instance of Instance
-        public Order Deserialize(DefaultEnvelope env)
+        protected override void SetEntityInstanceFromDbRecord()
         {
-            return JsonConvert.DeserializeObject<Order>(env.Data);
+            base.SetEntityInstanceFromDbRecord();
+            EntityInstance.CreateUtcTick = CreateUtcTick;
+            EntityInstance.UpdateUtcTick = UpdateUtcTick;
         }
+
     }
 
-    public interface IOrderRepo : IOrderController, IOrderSecureController { }
+    public interface IOrderRepo : IDYDBRepository<OrderEnvelope, Order> 
+    {
+        Task<ActionResult<Order>> PlaceOrderAsync(Order body);
+        Task<ActionResult<Order>> GetOrderByIdAsync(long orderId);
+        Task<IActionResult> DeleteOrderAsync(long orderId);
+    }
 
-    public class OrderRepo : DYDBRepository<DefaultEnvelope, OrderHelper, Order>,  IOrderRepo
+    public class OrderRepo : DYDBRepository<OrderEnvelope, Order>, IOrderRepo
     {
         public OrderRepo(
             IAmazonDynamoDB client,
@@ -54,6 +54,7 @@ namespace PetStoreRepo.Models
         {
             this.petRepo = petRepo;
         }
+
 
         IPetRepo petRepo;
 
@@ -66,9 +67,10 @@ namespace PetStoreRepo.Models
             {"#General", "General" }
         };
 
+
         public async Task<ActionResult<Order>> PlaceOrderAsync(Order body)
         {
-            return await CreateAsync(body as Order) as ActionResult;
+            return await CreateAsync(body as Order);
         }
 
         public async Task<ActionResult<Order>> GetOrderByIdAsync(long orderId)
@@ -77,7 +79,7 @@ namespace PetStoreRepo.Models
                  pKPrefix: "Orders:",
                  pKval: string.Empty,
                  sKPrefix: "Order:",
-                 sKval: orderId.ToString()) as ActionResult;
+                 sKval: orderId.ToString());
         }
 
         public async Task<IActionResult> DeleteOrderAsync(long orderId)
@@ -88,29 +90,6 @@ namespace PetStoreRepo.Models
                 sKPrefix: "Order:",
                 sKval: orderId.ToString());
         }
-
-        public async Task<ActionResult<IDictionary<string, int>>> GetInventoryAsync()
-        {
-            var allPetsResult = await petRepo.GetInventoryAsync();
-            if (allPetsResult.GetType() == typeof(OkObjectResult))
-            {
-                var value = (allPetsResult as OkObjectResult).Value as ICollection<Pet>;
-                if (value == null)
-                    return new NoContentResult();
-
-                var inventory = new Dictionary<string, int>();
-                foreach (var pet in value)
-                {
-                    var status = pet.PetStatus.ToString();
-                    if (!inventory.ContainsKey(status))
-                        inventory.Add(status, 0);
-                    inventory[status] += 1;
-                }
-                return new OkObjectResult(inventory);
-            }
-            else
-                return allPetsResult as ActionResult;
-        }
-
     }
 }
+

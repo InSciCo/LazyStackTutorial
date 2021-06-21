@@ -45,16 +45,18 @@ namespace PetStoreClientSDK
         partial void PrepareRequest(ILzHttpClient client, System.Net.Http.HttpRequestMessage request, System.Text.StringBuilder urlBuilder);
         partial void ProcessResponse(ILzHttpClient client, System.Net.Http.HttpResponseMessage response);
         /// <summary>Add a new pet to the store</summary>
+        /// <returns>successful operation</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task AddPetAsync(object body)
+        public System.Threading.Tasks.Task<Pet> AddPetAsync(Pet body)
         {
             return AddPetAsync(body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Add a new pet to the store</summary>
+        /// <returns>successful operation</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task AddPetAsync(object body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<Pet> AddPetAsync(Pet body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -72,6 +74,7 @@ namespace PetStoreClientSDK
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
     
                     PrepareRequest(client_, request_, urlBuilder_);
                     
@@ -94,15 +97,20 @@ namespace PetStoreClientSDK
                         ProcessResponse(client_, response_);
     
                         var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<Pet>(response_, headers_).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
                         if (status_ == 405)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new ApiException("Invalid input", status_, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ == 200 || status_ == 204)
-                        {
-                            return;
                         }
                         else
                         {
@@ -125,16 +133,18 @@ namespace PetStoreClientSDK
         }
     
         /// <summary>Update an existing pet</summary>
+        /// <returns>successful operation</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task UpdatePetAsync(object body)
+        public System.Threading.Tasks.Task<Pet> UpdatePetAsync(Pet body)
         {
             return UpdatePetAsync(body, System.Threading.CancellationToken.None);
         }
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Update an existing pet</summary>
+        /// <returns>successful operation</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task UpdatePetAsync(object body, System.Threading.CancellationToken cancellationToken)
+        public async System.Threading.Tasks.Task<Pet> UpdatePetAsync(Pet body, System.Threading.CancellationToken cancellationToken)
         {
             if (body == null)
                 throw new System.ArgumentNullException("body");
@@ -152,6 +162,7 @@ namespace PetStoreClientSDK
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("PUT");
+                    request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("application/json"));
     
                     PrepareRequest(client_, request_, urlBuilder_);
                     
@@ -174,6 +185,16 @@ namespace PetStoreClientSDK
                         ProcessResponse(client_, response_);
     
                         var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            var objectResponse_ = await ReadObjectResponseAsync<Pet>(response_, headers_).ConfigureAwait(false);
+                            if (objectResponse_.Object == null)
+                            {
+                                throw new ApiException("Response was null which was not expected.", status_, objectResponse_.Text, headers_, null);
+                            }
+                            return objectResponse_.Object;
+                        }
+                        else
                         if (status_ == 400)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -190,11 +211,6 @@ namespace PetStoreClientSDK
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new ApiException("Validation exception", status_, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ == 200 || status_ == 204)
-                        {
-                            return;
                         }
                         else
                         {
@@ -399,94 +415,9 @@ namespace PetStoreClientSDK
             }
         }
     
-        /// <summary>Updates a pet in the store with form data</summary>
-        /// <param name="petId">ID of pet that needs to be updated</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public System.Threading.Tasks.Task UpdatePetWithFormAsync(long petId, Body body)
-        {
-            return UpdatePetWithFormAsync(petId, body, System.Threading.CancellationToken.None);
-        }
-    
-        /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
-        /// <summary>Updates a pet in the store with form data</summary>
-        /// <param name="petId">ID of pet that needs to be updated</param>
-        /// <exception cref="ApiException">A server side error occurred.</exception>
-        public async System.Threading.Tasks.Task UpdatePetWithFormAsync(long petId, Body body, System.Threading.CancellationToken cancellationToken)
-        {
-            if (petId == null)
-                throw new System.ArgumentNullException("petId");
-    
-            if (body == null)
-                throw new System.ArgumentNullException("body");
-    
-            var urlBuilder_ = new System.Text.StringBuilder();
-            urlBuilder_.Append("pet/{petId}");
-            urlBuilder_.Replace("{petId}", System.Uri.EscapeDataString(ConvertToString(petId, System.Globalization.CultureInfo.InvariantCulture)));
-    
-            var client_ = _httpClient;
-            var disposeClient_ = false;
-            try
-            {
-                using (var request_ = new System.Net.Http.HttpRequestMessage())
-                {
-                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(body, _settings.Value));
-                    content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/x-www-form-urlencoded");
-                    request_.Content = content_;
-                    request_.Method = new System.Net.Http.HttpMethod("POST");
-    
-                    PrepareRequest(client_, request_, urlBuilder_);
-                    
-                    var url_ = urlBuilder_.ToString();
-                    request_.RequestUri = new System.Uri(url_, System.UriKind.RelativeOrAbsolute);
-    
-                    PrepareRequest(client_, request_, url_);
-    
-                    var response_ = await client_.SendAsync(request_, System.Net.Http.HttpCompletionOption.ResponseHeadersRead, cancellationToken).ConfigureAwait(false);
-                    var disposeResponse_ = true;
-                    try
-                    {
-                        var headers_ = System.Linq.Enumerable.ToDictionary(response_.Headers, h_ => h_.Key, h_ => h_.Value);
-                        if (response_.Content != null && response_.Content.Headers != null)
-                        {
-                            foreach (var item_ in response_.Content.Headers)
-                                headers_[item_.Key] = item_.Value;
-                        }
-    
-                        ProcessResponse(client_, response_);
-    
-                        var status_ = (int)response_.StatusCode;
-                        if (status_ == 405)
-                        {
-                            string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            throw new ApiException("Invalid input", status_, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ == 200 || status_ == 204)
-                        {
-                            return;
-                        }
-                        else
-                        {
-                            var responseData_ = response_.Content == null ? null : await response_.Content.ReadAsStringAsync().ConfigureAwait(false); 
-                            throw new ApiException("The HTTP status code of the response was not expected (" + status_ + ").", status_, responseData_, headers_, null);
-                        }
-                    }
-                    finally
-                    {
-                        if (disposeResponse_)
-                            response_.Dispose();
-                    }
-                }
-            }
-            finally
-            {
-                if (disposeClient_)
-                    client_.Dispose();
-            }
-        }
-    
         /// <summary>Deletes a pet</summary>
         /// <param name="petId">Pet id to delete</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task DeletePetAsync(string api_key, long petId)
         {
@@ -496,6 +427,7 @@ namespace PetStoreClientSDK
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Deletes a pet</summary>
         /// <param name="petId">Pet id to delete</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task DeletePetAsync(string api_key, long petId, System.Threading.CancellationToken cancellationToken)
         {
@@ -537,6 +469,11 @@ namespace PetStoreClientSDK
                         ProcessResponse(client_, response_);
     
                         var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            return;
+                        }
+                        else
                         if (status_ == 400)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -547,11 +484,6 @@ namespace PetStoreClientSDK
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new ApiException("Pet not found", status_, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ == 200 || status_ == 204)
-                        {
-                            return;
                         }
                         else
                         {
@@ -987,6 +919,7 @@ namespace PetStoreClientSDK
     
         /// <summary>Delete purchase order by ID</summary>
         /// <param name="orderId">ID of the order that needs to be deleted</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task DeleteOrderAsync(long orderId)
         {
@@ -996,6 +929,7 @@ namespace PetStoreClientSDK
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>Delete purchase order by ID</summary>
         /// <param name="orderId">ID of the order that needs to be deleted</param>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task DeleteOrderAsync(long orderId, System.Threading.CancellationToken cancellationToken)
         {
@@ -1035,6 +969,11 @@ namespace PetStoreClientSDK
                         ProcessResponse(client_, response_);
     
                         var status_ = (int)response_.StatusCode;
+                        if (status_ == 200)
+                        {
+                            return;
+                        }
+                        else
                         if (status_ == 400)
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
@@ -1045,11 +984,6 @@ namespace PetStoreClientSDK
                         {
                             string responseText_ = ( response_.Content == null ) ? string.Empty : await response_.Content.ReadAsStringAsync().ConfigureAwait(false);
                             throw new ApiException("Order not found", status_, responseText_, headers_, null);
-                        }
-                        else
-                        if (status_ == 200 || status_ == 204)
-                        {
-                            return;
                         }
                         else
                         {
@@ -1075,7 +1009,6 @@ namespace PetStoreClientSDK
         /// <param name="tags">Tags to filter by</param>
         /// <returns>successful operation</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        [System.Obsolete]
         public System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Pet>> FindPetsByTagsAsync(System.Collections.Generic.IEnumerable<string> tags)
         {
             return FindPetsByTagsAsync(tags, System.Threading.CancellationToken.None);
@@ -1086,7 +1019,6 @@ namespace PetStoreClientSDK
         /// <param name="tags">Tags to filter by</param>
         /// <returns>successful operation</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        [System.Obsolete]
         public async System.Threading.Tasks.Task<System.Collections.Generic.ICollection<Pet>> FindPetsByTagsAsync(System.Collections.Generic.IEnumerable<string> tags, System.Threading.CancellationToken cancellationToken)
         {
             if (tags == null)
@@ -1163,7 +1095,7 @@ namespace PetStoreClientSDK
         }
     
         /// <summary>See pet database</summary>
-        /// <returns>successful operation</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public System.Threading.Tasks.Task SeedPetsAsync()
         {
@@ -1172,7 +1104,7 @@ namespace PetStoreClientSDK
     
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <summary>See pet database</summary>
-        /// <returns>successful operation</returns>
+        /// <returns>Success</returns>
         /// <exception cref="ApiException">A server side error occurred.</exception>
         public async System.Threading.Tasks.Task SeedPetsAsync(System.Threading.CancellationToken cancellationToken)
         {

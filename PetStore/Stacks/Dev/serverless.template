@@ -15,16 +15,6 @@ Resources:
               audience:
               - Ref: UserPoolClient
         DefaultAuthorizer: OpenIdAuthorizer
-  ApiSecure:
-    Type: AWS::Serverless::Api
-    Properties:
-      Name:
-        Fn::Sub: ${AWS::StackName}-ApiSecure
-      StageName: Dev
-      Auth:
-        DefaultAuthorizer: AWS_IAM
-      EndpointConfiguration: REGIONAL
-      TracingEnabled: true
   UserPool:
     Type: AWS::Cognito::UserPool
     Properties:
@@ -71,50 +61,6 @@ Resources:
           Ref: UserPoolClient
         ProviderName:
           Fn::GetAtt: UserPool.ProviderName
-  CognitoIdentityPoolRoles:
-    Type: AWS::Cognito::IdentityPoolRoleAttachment
-    Properties:
-      IdentityPoolId:
-        Ref: IdentityPool
-      Roles:
-        authenticated:
-          Fn::GetAtt: AuthRole.Arn
-  AuthRole:
-    Type: AWS::IAM::Role
-    Properties:
-      RoleName:
-        Fn::Sub: ${AWS::StackName}-AuthRole
-      AssumeRolePolicyDocument:
-        Version: '2012-10-17'
-        Statement:
-        - Effect: 'Allow'
-          Principal:
-            Federated: 'cognito-identity.amazonaws.com'
-          Action:
-          - 'sts:AssumeRoleWithWebIdentity'
-          Condition:
-            StringEquals:
-              'cognito-identity.amazonaws.com:aud':
-                Ref: IdentityPool
-            'ForAnyValue:StringLike':
-              'cognito-identity.amazonaws.com:amr': authenticated
-      Policies:
-      - PolicyName:
-          Fn::Sub: ${AWS::StackName}-AuthPolicy
-        PolicyDocument:
-          Version: '2012-10-17'
-          Statement:
-          - Effect: 'Allow'
-            Action:
-            - 'mobileanalytics:PutEvents'
-            - 'cognito-sync:*'
-            - 'cognito-identity:*'
-            Resource: '*'
-          - Effect: 'Allow'
-            Action:
-            - 'execute-api:Invoke'
-            Resource:
-              Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ApiSecure}/*
   LZDDB01:
     Type: AWS::DynamoDB::Table
     Properties:
@@ -251,6 +197,20 @@ Resources:
           TABLE_ARN:
             Fn::GetAtt: LZDDB01.Arn
       Events:
+        AddPet:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApiSecure
+            Path: /pet
+            Method: POST
+        UpdatePet:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApiSecure
+            Path: /pet
+            Method: PUT
         FindPetsByStatus:
           Type: HttpApi
           Properties:
@@ -265,6 +225,13 @@ Resources:
               Ref: HttpApiSecure
             Path: /pet/{petId}
             Method: GET
+        DeletePet:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApiSecure
+            Path: /pet/{petId}
+            Method: DELETE
         GetPetCategories:
           Type: HttpApi
           Properties:
@@ -295,60 +262,6 @@ Resources:
             Method: GET
     MetaData:
       ApiEventsGeneration: true
-  PetSecure:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName:
-        Fn::Sub: ${AWS::StackName}-PetSecure
-      CodeUri: ../../Lambdas/PetSecure/bin/Debug/netcoreapp3.1
-      Handler: PetSecure::LambdaFunc.LambdaEntryPoint::FunctionHandlerAsync
-      Description: PetSecure
-      Runtime: dotnetcore3.1
-      MemorySize: 256
-      Timeout: 30
-      Tracing: Active
-      Policies:
-      - AWSXrayWriteOnlyAccess
-      - DynamoDBCrudPolicy:
-          TableName:
-            Ref: LZDDB01
-      Environment:
-        Variables:
-          TABLE_NAME:
-            Ref: LZDDB01
-          TABLE_ARN:
-            Fn::GetAtt: LZDDB01.Arn
-      Events:
-        AddPet:
-          Type: HttpApi
-          Properties:
-            ApiId:
-              Ref: HttpApiSecure
-            Path: /pet
-            Method: POST
-        UpdatePet:
-          Type: HttpApi
-          Properties:
-            ApiId:
-              Ref: HttpApiSecure
-            Path: /pet
-            Method: PUT
-        UpdatePetWithForm:
-          Type: HttpApi
-          Properties:
-            ApiId:
-              Ref: HttpApiSecure
-            Path: /pet/{petId}
-            Method: POST
-        DeletePet:
-          Type: HttpApi
-          Properties:
-            ApiId:
-              Ref: HttpApiSecure
-            Path: /pet/{petId}
-            Method: DELETE
-    MetaData:
-      ApiEventsGeneration: true
   Order:
     Type: AWS::Serverless::Function
     Properties:
@@ -373,6 +286,13 @@ Resources:
           TABLE_ARN:
             Fn::GetAtt: LZDDB01.Arn
       Events:
+        GetInventory:
+          Type: HttpApi
+          Properties:
+            ApiId:
+              Ref: HttpApiSecure
+            Path: /order/inventory
+            Method: GET
         PlaceOrder:
           Type: HttpApi
           Properties:
@@ -387,49 +307,12 @@ Resources:
               Ref: HttpApiSecure
             Path: /order/{orderId}
             Method: GET
-    MetaData:
-      ApiEventsGeneration: true
-  OrderSecure:
-    Type: AWS::Serverless::Function
-    Properties:
-      FunctionName:
-        Fn::Sub: ${AWS::StackName}-OrderSecure
-      CodeUri: ../../Lambdas/OrderSecure/bin/Debug/netcoreapp3.1
-      Handler: OrderSecure::LambdaFunc.LambdaEntryPoint::FunctionHandlerAsync
-      Description: OrderSecure
-      Runtime: dotnetcore3.1
-      MemorySize: 256
-      Timeout: 30
-      Tracing: Active
-      Policies:
-      - AWSXrayWriteOnlyAccess
-      - DynamoDBCrudPolicy:
-          TableName:
-            Ref: LZDDB01
-      Environment:
-        Variables:
-          TABLE_NAME:
-            Ref: LZDDB01
-          TABLE_ARN:
-            Fn::GetAtt: LZDDB01.Arn
-      Events:
-        GetInventory:
-          Type: Api
-          Properties:
-            RestApiId:
-              Ref: ApiSecure
-            Path: /order/inventory
-            Method: GET
-            Auth:
-              InvokeRole: NONE
         DeleteOrder:
-          Type: Api
+          Type: HttpApi
           Properties:
-            RestApiId:
-              Ref: ApiSecure
+            ApiId:
+              Ref: HttpApiSecure
             Path: /order/{orderId}
             Method: DELETE
-            Auth:
-              InvokeRole: NONE
     MetaData:
       ApiEventsGeneration: true

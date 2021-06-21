@@ -9,11 +9,8 @@ Stacks:
 
 ApiTagMap:
   HttpApiSecure:
-  - petSecure 
-  - order
   - pet 
-  ApiSecure: 
-  - orderSecure
+  - order
 
 NugetPackageVersions:
   Amazon.Lambda.AspNetCoreServer: "5.2.0"
@@ -40,27 +37,35 @@ ProjectOptions:
 
   SchemaProjects:
     PackageReferences:
-      Newtonsoft.Json: 
+      Newtonsoft.Json: ""
 
+  Pet:
+    ProjectReferences:
+    - ..\..\Controllers\PetControllerImpl\PetControllerImpl.csproj
+    ServiceRegistrations:
+    - services.AddSingleton<PetStoreRepo.Models.IPetRepo, PetStoreRepo.Models.PetRepo>(); 
+    - services.AddSingleton<PetStoreRepo.Models.ITagRepo,PetStoreRepo.Models.TagRepo>();
+    - services.AddSingleton<PetStoreRepo.Models.ICategoryRepo,PetStoreRepo.Models.CategoryRepo>(); 
+    - services.AddScoped<PetController.IPetController, PetControllerImpl.PetControllerImpl>();
+  
+  Order:
+    ProjectReferences:
+    - ..\..\Controllers\OrderControllerImpl\OrderControllerImpl.csproj 
+    - ..\..\Controllers\PetControllerImpl\PetControllerImpl.csproj
+    ServiceRegistrations:
+    - services.AddSingleton<PetStoreRepo.Models.IPetRepo, PetStoreRepo.Models.PetRepo>(); 
+    - services.AddSingleton<PetStoreRepo.Models.IOrderRepo, PetStoreRepo.Models.OrderRepo>();
+    - services.AddSingleton<PetStoreRepo.Models.ITagRepo,PetStoreRepo.Models.TagRepo>();
+    - services.AddSingleton<PetStoreRepo.Models.ICategoryRepo,PetStoreRepo.Models.CategoryRepo>(); 
+    - services.AddScoped<PetController.IPetController, PetControllerImpl.PetControllerImpl>();
+     
   LambdaProjects:
     Runtime: "dotnetcore3.1"
     PackageReferences:
-      AWSSDK.Extensions.NETCore.Setup: 
-      Amazon.Lambda.AspNetCoreServer: 
-
-    ProjectReferences:
-    - ..\..\PetStoreRepo\PetStoreRepo.csproj
+      AWSSDK.Extensions.NETCore.Setup: ""
+      Amazon.Lambda.AspNetCoreServer: ""
             
     ServiceRegistrations:
-    - services.AddSingleton<PetStoreRepo.Models.PetRepo>(); 
-    - services.AddSingleton<PetStoreRepo.Models.IPetRepo>(x => x.GetRequiredService<PetStoreRepo.Models.PetRepo>()); 
-    - services.AddSingleton<PetController.IPetController>(x => x.GetRequiredService<PetStoreRepo.Models.PetRepo>()); 
-    - services.AddSingleton<PetSecureController.IPetSecureController>(x => x.GetRequiredService<PetStoreRepo.Models.PetRepo>());
-    - services.AddSingleton<PetStoreRepo.Models.OrderRepo>();
-    - services.AddSingleton<OrderController.IOrderController>(x => x.GetRequiredService<PetStoreRepo.Models.OrderRepo>());
-    - services.AddSingleton<OrderSecureController.IOrderSecureController>(x=> x.GetRequiredService<PetStoreRepo.Models.OrderRepo>());
-    - services.AddSingleton<PetStoreRepo.Models.ITagRepo,PetStoreRepo.Models.TagRepo>();
-    - services.AddSingleton<PetStoreRepo.Models.ICategoryRepo,PetStoreRepo.Models.CategoryRepo>(); 
     - services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
     - services.AddAWSService<Amazon.DynamoDBv2.IAmazonDynamoDB>();
 
@@ -85,20 +90,20 @@ ProjectOptions:
       Swashbuckle.AspNetCore:   
 
     ServiceRegistrations:
-    - services.AddSingleton<PetStoreRepo.Models.PetRepo>(); 
-    - services.AddSingleton<PetStoreRepo.Models.IPetRepo>(x => x.GetRequiredService<PetStoreRepo.Models.PetRepo>()); 
-    - services.AddSingleton<PetController.IPetController>(x => x.GetRequiredService<PetStoreRepo.Models.PetRepo>()); 
-    - services.AddSingleton<PetSecureController.IPetSecureController>(x => x.GetRequiredService<PetStoreRepo.Models.PetRepo>());
-    - services.AddSingleton<PetStoreRepo.Models.OrderRepo>();
-    - services.AddSingleton<OrderController.IOrderController>(x => x.GetRequiredService<PetStoreRepo.Models.OrderRepo>());
-    - services.AddSingleton<OrderSecureController.IOrderSecureController>(x=> x.GetRequiredService<PetStoreRepo.Models.OrderRepo>());
+    - services.AddSingleton<PetStoreRepo.Models.IPetRepo, PetStoreRepo.Models.PetRepo>(); 
+    - services.AddSingleton<PetStoreRepo.Models.IOrderRepo, PetStoreRepo.Models.OrderRepo>();
     - services.AddSingleton<PetStoreRepo.Models.ITagRepo,PetStoreRepo.Models.TagRepo>();
     - services.AddSingleton<PetStoreRepo.Models.ICategoryRepo,PetStoreRepo.Models.CategoryRepo>(); 
+   
+    - services.AddScoped<PetController.IPetController, PetControllerImpl.PetControllerImpl>();
+    - services.AddScoped<OrderController.IOrderController, OrderControllerImpl.OrderControllerImpl>();
+   
     - services.AddDefaultAWSOptions(Configuration.GetAWSOptions());
     - services.AddAWSService<Amazon.DynamoDBv2.IAmazonDynamoDB>();
 
     ProjectReferences:
-    - ..\PetStoreRepo\PetStoreRepo.csproj
+    - ..\Controllers\OrderControllerImpl\OrderControllerImpl.csproj 
+    - ..\Controllers\PetControllerImpl\PetControllerImpl.csproj
 
 AwsResources:
   Pet:

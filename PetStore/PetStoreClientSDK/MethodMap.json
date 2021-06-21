@@ -3,14 +3,13 @@
   "UpdatePetAsync": "HttpApiSecure",
   "FindPetsByStatusAsync": "HttpApiSecure",
   "GetPetByIdAsync": "HttpApiSecure",
-  "UpdatePetWithFormAsync": "HttpApiSecure",
   "DeletePetAsync": "HttpApiSecure",
   "GetPetCategoriesAsync": "HttpApiSecure",
   "GetPetTagsAsync": "HttpApiSecure",
-  "GetInventoryAsync": "ApiSecure",
+  "GetInventoryAsync": "HttpApiSecure",
   "PlaceOrderAsync": "HttpApiSecure",
   "GetOrderByIdAsync": "HttpApiSecure",
-  "DeleteOrderAsync": "ApiSecure",
+  "DeleteOrderAsync": "HttpApiSecure",
   "FindPetsByTagsAsync": "HttpApiSecure",
   "SeedPetsAsync": "HttpApiSecure"
 }}
