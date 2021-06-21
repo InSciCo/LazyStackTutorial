@@ -17,12 +17,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\PetStoreClientSDK\PetStoreClientSDK.csproj" />
+    <EmbeddedResource Include="..\..\..\PetStore\Stacks\Dev\AwsSettings.json" />
+    <EmbeddedResource Include="..\..\LocalApis.json" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="..\..\Stacks\Dev\AwsSettings.json" />
-    <EmbeddedResource Include="..\..\LocalApis.json" />
+    <ProjectReference Include="..\..\..\PetStore\PetStoreClientSDK\PetStoreClientSDK.csproj" />
   </ItemGroup>
 
   <ItemGroup>

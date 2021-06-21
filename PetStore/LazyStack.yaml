@@ -27,6 +27,8 @@ ProjectOptions:
       DocumentationFile: bin\$(Configuration)\$(TargetFramework)\PetStoreClientSDK.xml
       RepositoryUrl: https://github.com/USER_ID/REPO_ID.git
       PackageReleaseNotes: 'Minor update'
+  ProjectReferences:
+  - ..\PetStoreSchema\PetStoreSchema.csproj
 
   ClientSDKProjects:
     PackageReferences:

@@ -1,8 +1,10 @@
 using System;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 using LazyStackAuth;
 using PetStoreClientSDK;
+using PetStoreSchema.Models;
 
 namespace PetStoreConsoleApp
 {
@@ -108,7 +110,8 @@ namespace PetStoreConsoleApp
 
                             Console.WriteLine("5. Seed Pets data");
                             Console.WriteLine("6. Get Pet 1");
-                            Console.WriteLine("7. Quit");
+                            Console.WriteLine("7. See Available Pets");
+                            Console.WriteLine("8. Quit");
                             Console.Write(">");
                             input = Console.ReadLine();
                             switch(input)
@@ -148,6 +151,22 @@ namespace PetStoreConsoleApp
                                     }
                                     break;
                                 case "7":
+                                    try
+                                    {
+                                        var petStatus = new List<PetStatus> { PetStatus.Available };
+                                        var pets = await petStore.FindPetsByStatusAsync(petStatus);
+                                        if (pets.Count == 0)
+                                            Console.WriteLine("Sorry - No Pets Found");
+                                        else 
+                                            foreach (var pet in pets)
+                                                Console.WriteLine($"- Id: {pet.Id} Name: {pet.Name}" );
+                                        Console.WriteLine();
+                                    } catch (Exception e)
+                                    {
+                                        Console.WriteLine($"Could not get pets. {e.Message}");
+                                    }
+                                    break;
+                                case "8":
                                     return; // exit program
                                 default:
                                     Console.WriteLine("Sorry, didn't understand that input. Please try again.");

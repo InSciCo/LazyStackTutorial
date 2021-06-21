@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31005.135
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PetStoreMobileApp.Android", "PetStoreMobileApp\PetStoreMobileApp.Android\PetStoreMobileApp.Android.csproj", "{9615C2B9-45A3-43C3-967A-3A4DBFE94459}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetStoreMobileApp", "PetStoreMobileApp\PetStoreMobileApp\PetStoreMobileApp.csproj", "{A1139B54-A21E-4222-9D01-C6AE5B6D82F6}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PetStoreClientSDK", "..\PetStore\PetStoreClientSDK\PetStoreClientSDK.csproj", "{FCAD28D3-DCF7-4445-A734-89C3D3CADDBD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6C3AB8EA-787A-4DDA-AEEF-BD98D1ACDC38}"
+	ProjectSection(SolutionItems) = preProject
+		LocalApis.json = LocalApis.json
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9615C2B9-45A3-43C3-967A-3A4DBFE94459}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9615C2B9-45A3-43C3-967A-3A4DBFE94459}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9615C2B9-45A3-43C3-967A-3A4DBFE94459}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{9615C2B9-45A3-43C3-967A-3A4DBFE94459}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9615C2B9-45A3-43C3-967A-3A4DBFE94459}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9615C2B9-45A3-43C3-967A-3A4DBFE94459}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{A1139B54-A21E-4222-9D01-C6AE5B6D82F6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1139B54-A21E-4222-9D01-C6AE5B6D82F6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1139B54-A21E-4222-9D01-C6AE5B6D82F6}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{A1139B54-A21E-4222-9D01-C6AE5B6D82F6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1139B54-A21E-4222-9D01-C6AE5B6D82F6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1139B54-A21E-4222-9D01-C6AE5B6D82F6}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{FCAD28D3-DCF7-4445-A734-89C3D3CADDBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FCAD28D3-DCF7-4445-A734-89C3D3CADDBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FCAD28D3-DCF7-4445-A734-89C3D3CADDBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FCAD28D3-DCF7-4445-A734-89C3D3CADDBD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F8BB1D29-F958-43E3-BC54-8B63AF478DC9}
+	EndGlobalSection
+EndGlobal
