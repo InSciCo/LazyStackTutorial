@@ -109,12 +109,13 @@ namespace PetStoreRepo.Models
             };
 
             var queryResult = await ListAsync(queryRequest);
-            if (queryResult.Value != null)
+            var pets = (queryResult.Result as OkObjectResult)?.Value as ICollection<Pet>;
+            if (pets!= null)
             {
                 var statusList = status.ToList();
                 // Filter the list
                 var list = new List<Pet>();
-                foreach (var pet in queryResult.Value)
+                foreach (var pet in pets)
                 {
                     if (statusList.Contains(pet.PetStatus))
                         list.Add(pet);
@@ -125,7 +126,7 @@ namespace PetStoreRepo.Models
                     return new NoContentResult();
             }
             else
-                return new NoContentResult();
+                return queryResult;
         }
 
         public async Task<ActionResult<ICollection<Pet>>> FindPetsByTagsAsync(IEnumerable<string> tags)
@@ -142,14 +143,16 @@ namespace PetStoreRepo.Models
                 ExpressionAttributeNames = _ExpressionAttributeNames,
                 ProjectionExpression = "#Data, TypeName, #Status, UpdateUtcTick, CreateUtcTick, #General"
             };
-            ActionResult<ICollection<Pet>> result = await ListAsync(queryRequest);
-            if (result.Value != null)
+
+            var queryResult = await ListAsync(queryRequest);
+            var pets = (queryResult.Result as OkObjectResult)?.Value as ICollection<Pet>;
+            if (pets != null)
             {
                 // Filter the list
                 var list = new List<Pet>();
-                foreach (var pet in result.Value)
+                foreach (var pet in pets)
                     foreach (var tag in pet.Tags)
-                        if (tags.Contains(tag.ToString()))
+                        if (tags.Contains(tag.Name))
                             list.Add(pet);
                 if (list.Count > 0)
                     return new OkObjectResult(list);
@@ -157,7 +160,7 @@ namespace PetStoreRepo.Models
                     return new NoContentResult();
             }
             else
-                return new NoContentResult();
+                return queryResult;
         }
 
         public async Task<ActionResult<Pet>> GetPetByIdAsync(long petId)
